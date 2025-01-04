@@ -1,0 +1,205 @@
+{% extends "ecomm/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    .product-detail-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+.product-image {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+}
+
+.product-image img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+}
+
+.product-info {
+    flex: 1;
+    padding: 10px;
+    max-width: 600px;
+}
+
+.product-info h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.product-info p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.product-info h4 {
+    font-size: 1.5em;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+
+.product-info button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    border-radius: 5px;
+}
+
+.product-info button:hover {
+    background-color: #0056b3;
+}
+
+/* Gallery Section Styling */
+.product-gallery {
+    margin-top: 20px;
+}
+
+.gallery-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.gallery-image {
+    max-width: 150px;
+    height: auto;
+    cursor: pointer;
+}
+
+.gallery-image:hover {
+    opacity: 0.8;
+}
+
+
+
+    
+    /* Container for product detail sections */
+    .product-detail-container {
+        display: flex;  /* Use Flexbox to create a two-column layout */
+        justify-content: flex-start;  /* Ensure that items start at the left */
+        align-items: flex-start;  /* Align items at the top */
+        margin-top: 20px;
+    }
+    
+    /* Left side: Product Image */
+    .product-image {
+        flex: 0 0 50%;  /* Take up 50% of the container width */
+        padding: 10px;
+        text-align: center;  /* Center the image within the div */
+    }
+    
+    .product-image img {
+        width: 100%;  /* Makes the image responsive */
+        max-width: 500px;  /* Max width for the image */
+        height: auto;  /* Maintain aspect ratio */
+    }
+    
+    /* Right side: Product Info */
+    .product-info {
+        flex: 0 0 50%;  /* Take up 50% of the container width */
+        padding: 10px;
+        max-width: 600px;  /* Max width for text content */
+    }
+    
+    .product-info h2 {
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+    
+    .product-info p {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+    
+    .product-info h4 {
+        font-size: 1.5em;
+        color: #28a745;  /* Green color for price */
+        margin-bottom: 20px;
+    }
+    
+    .product-info button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2em;
+        border-radius: 5px;
+    }
+    
+    .product-info button:hover {
+        background-color: #0056b3;
+    }
+    
+    /* Media Query for Small Screens (Mobile) */
+    @media (max-width: 768px) {
+        .product-detail-container {
+            flex-direction: column;  /* Stack image and info vertically */
+            align-items: center;  /* Center-align the content */
+        }
+    
+        .product-image, .product-info {
+            flex: none;  /* Remove flex for small screens */
+            width: 100%;  /* Make both sections take full width */
+            max-width: 100%;  /* Prevent exceeding screen width */
+        }
+    
+        .product-image img {
+            max-width: 100%;  /* Ensure the image fits on mobile screens */
+        }
+    }
+</style>  
+    {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if products %}
+
+    <div class="product-detail">
+        <div class="product-detail-container">
+            <!-- Left side: Product Image -->
+            <div class="product-image">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            </div>
+
+            <!-- Right side: Product Details -->
+            <div class="product-info">
+                <h2>{{ product.name }}</h2>
+                <p>{{ product.description }}</p>
+                <h4>${{ product.price }}</h4>
+
+                <!-- Add to Cart Form -->
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+                <div class="product-gallery">
+                    <h4>Gallery</h4>
+                    <div class="gallery-images">
+                        {% for image in product_images %}
+                            <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="gallery-image">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <h2>no product available</h2>
+    {% endif %}
+{% endblock %}

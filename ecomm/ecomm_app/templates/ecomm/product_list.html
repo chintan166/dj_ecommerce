@@ -1,0 +1,175 @@
+{% extends "ecomm/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="food_section layout_padding-bottom">
+    <div class="container">
+        <div class="heading_container heading_center">
+            <h2>
+                Our Menu
+            </h2>
+        </div>
+
+        <div class="row">
+            <!-- Filter Section (Right-Aligned) -->
+            <div class="col-md-3 filter-section">
+                <form method="get">
+                    <label for="price_filter">Sort by Price:</label>
+                    <select name="price_filter" id="price_filter" onchange="this.form.submit()">
+                        <option value="">Select</option>
+                        <option value="asc" {% if request.GET.price_filter == 'asc' %} selected {% endif %}>Price: Low to High</option>
+                        <option value="desc" {% if request.GET.price_filter == 'desc' %} selected {% endif %}>Price: High to Low</option>
+                    </select>
+                </form>
+            </div>
+
+            <!-- Product Listing Section -->
+            <div class="col-md-9">
+                <div class="filters-content">
+                    <div class="row grid">
+                        {% for product in page_obj %}
+                        <div class="col-sm-6 col-lg-4 all pizza">
+                            <div class="box">
+                                <div>
+                                    <div class="img-box">
+                                        {% if product.image %}
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        {% else %}
+                                        <img src="{% static 'images/no-image.png' %}" alt="No image available">
+                                        {% endif %}
+                                    </div>
+                                    <div class="detail-box">
+                                        <h5>
+                                            <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+                                        </h5>
+                                        <p>{{ product.description }}</p>
+                                        <div class="options">
+                                            <h6>${{ product.price }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Filter Section */
+    .filter-section {
+        margin-bottom: 20px;
+        text-align: right;  /* Align filter to the right side */
+    }
+
+    /* Style for the Select Dropdown */
+    .filter-section select {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    /* Label Styling */
+    .filter-section label {
+        font-weight: bold;
+        margin-right: 10px;
+        font-size: 18px;
+    }
+
+    /* Pagination Section */
+    .pagination {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* Pagination Links */
+    .pagination a {
+        background-color: #f4f4f4;
+        border: 1px solid #ddd;
+        color: #333;
+        padding: 10px 15px;
+        margin: 0 5px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Active Page */
+    .pagination .current {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
+    }
+
+    /* Hover State for Links */
+    .pagination a:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    /* Disabled State (First/Previous/Next/Last) */
+    .pagination .disabled a {
+        background-color: #f4f4f4;
+        color: #ccc;
+        border-color: #ddd;
+        pointer-events: none;
+    }
+
+    /* Responsive design: Adjust pagination links for smaller screens */
+    @media (max-width: 768px) {
+        .pagination a {
+            padding: 8px 12px;
+        }
+
+        .pagination .current {
+            padding: 8px 12px;
+        }
+
+        /* Stacking for smaller screens */
+        .filter-section {
+            text-align: left;  /* Left align filter on small screens */
+            margin-bottom: 15px;
+        }
+
+        /* Product listing section */
+        .col-md-9, .col-md-3 {
+            flex: 0 0 100%; /* Stack filter and products */
+        }
+
+        .row {
+            flex-direction: column;  /* Stack filter and product columns */
+        }
+    }
+</style>
+
+{% endblock %}
