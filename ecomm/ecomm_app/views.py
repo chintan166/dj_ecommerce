@@ -1,11 +1,10 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Product, Cart, CartItem
+from .models import Product, Cart, CartItem,ContactUs
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib import messages
-from .forms import CustomUserCreationForm,CustomLoginForm
-
+from .forms import CustomUserCreationForm,CustomLoginForm,ContactUsForm
 
 
 
@@ -15,9 +14,6 @@ def home(request):
 
 def about(request):
     return render(request,'ecomm/about.html')
-
-def contact(request):
-    return render(request,'ecomm/contact.html')
 
 def product_detail(request, product_id):
     # Retrieve the product by its ID or slug
@@ -46,7 +42,7 @@ def product_list(request):
     # Pass the paginated products to the template
     return render(request, 'ecomm/product_list.html', {'page_obj': page_obj})
 
-
+@login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     
@@ -67,6 +63,7 @@ def add_to_cart(request, product_id):
     return redirect('product_detail', product_id=product.id)
     # View cart
 
+@login_required
 def view_cart(request):
     cart = Cart.objects.filter(user=request.user).first()
     if cart:
@@ -109,4 +106,25 @@ def register(request):
     
     return render(request, 'ecomm/register.html', {'form': form})
 
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            # Save the form data in the database
+            contact_us = ContactUs(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                subject=form.cleaned_data['subject'],
+                message=form.cleaned_data['message']
+            )
+            contact_us.save()
+            messages.success(request, "Your message has been sent successfully!")
+            # Redirect to the thank-you page
+            return redirect('home')
+    else:
+        form = ContactUsForm()
 
+    return render(request, 'ecomm/contact_form.html', {'form': form})
+
+def contact_thanks(request):
+    return render(request, 'ecomm/contact_thanks.html')

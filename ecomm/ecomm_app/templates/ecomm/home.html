@@ -5,7 +5,13 @@
 
 {% block content %}
 
-<!-- offer section -->
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
 <section class="offer_section layout_padding-bottom">
   <div class="offer_container">
