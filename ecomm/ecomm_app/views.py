@@ -56,7 +56,7 @@ def add_to_cart(request, product_id):
         # If the product is already in the cart, increase the quantity
         cart_item.quantity += 1
         cart_item.save()
-        messages.success(request, f'{product.name} quantity increased in your cart.')
+        messages.success(request, 'Your message has been sent successfully! <a href="/cart/" class="btn btn-primary">View Cart</a>', extra_tags='safe')
     else:
         messages.success(request, f'{product.name} has been added to your cart.')
 
@@ -118,7 +118,8 @@ def contact_view(request):
                 message=form.cleaned_data['message']
             )
             contact_us.save()
-            messages.success(request, "Your message has been sent successfully!")
+            messages.success(request, 'Your message has been sent successfully! <a href="/cart/" class="btn btn-primary">View Cart</a>', extra_tags='safe')
+
             # Redirect to the thank-you page
             return redirect('home')
     else:

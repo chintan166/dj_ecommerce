@@ -36,6 +36,3 @@ admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(CustomUser)
 admin.site.register(ContactUs,ContactUsAdmin)
-
-
-
