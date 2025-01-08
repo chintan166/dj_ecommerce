@@ -13,6 +13,8 @@
                     <p>Quantity: {{ item.quantity }}</p>
                     <p>Total: ${{ item.total_price }}</p>
                     <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
+                    <a href="{% url 'increment_quantity' item.id %}">+</a> 
+                    <a href="{% url 'decrement_quantity' item.id %}">-</a>
                 </li>
             {% endfor %}
         </ul>

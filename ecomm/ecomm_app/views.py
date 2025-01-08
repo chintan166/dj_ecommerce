@@ -74,7 +74,26 @@ def view_cart(request):
         total_price = 0
     return render(request, 'ecomm/cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
+@login_required
+def increment_quantity(request, cart_item_id):
+    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    cart_item.quantity += 1  # Increase quantity by 1
+    cart_item.save()
+    messages.success(request, f'Quantity of {cart_item.product.name} increased by 1.')
+    return redirect('view_cart')
 
+# Decrement item quantity in the cart
+@login_required
+def decrement_quantity(request, cart_item_id):
+    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    if cart_item.quantity > 1:  # Prevent quantity from going below 1
+        cart_item.quantity -= 1  # Decrease quantity by 1
+        cart_item.save()
+        messages.success(request, f'Quantity of {cart_item.product.name} decreased by 1.')
+    else:
+        cart_item.delete()
+        messages.warning(request, f'Cannot decrease the quantity of {cart_item.product.name} below 1.')
+    return redirect('view_cart')
 
 # Remove an item from the cart
 
