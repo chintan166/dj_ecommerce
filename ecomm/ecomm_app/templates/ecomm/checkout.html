@@ -1,0 +1,37 @@
+{% extends "ecomm/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<h3>Your Cart:</h3>
+<ul>
+    {% for item in cart_items %}
+        <li>{{ item.product.name }} - ${{ item.product.price }}</li>
+    {% endfor %}
+</ul>
+
+<p><strong>Total Price: ${{ total_price }}</strong></p>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h4>Select Shipping Method:</h4>
+    <select name="shipping_method">
+        {% for method in shipping_methods %}
+            <option value="{{ method.id }}">{{ method.name }} - ${{ method.price }}</option>
+        {% endfor %}
+    </select>
+
+    <h4>Select Payment Method:</h4>
+    <select name="payment_method">
+        {% for method in payment_methods %}
+            <option value="{{ method.id }}">{{ method.name }} - {{ method.description }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Place Order</button>
+</form>
+
+{% endblock %}
