@@ -1,0 +1,33 @@
+<!-- templates/ecomm/order_details.html -->
+{% extends "ecomm/base.html" %}
+
+{% block content %}
+  <div class="order-details-container">
+    <h1>Order #{{ order.id }}</h1>
+    <p>Total Price: ${{ order.total_price }}</p>
+    <p>Status: {{ order.status }}</p>
+    <p>Shipping Address: {{ order.shipping_address }}</p>
+
+    <h3>Items in this Order:</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order_items %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.price }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <a href="{% url 'my_account' %}">Back to My Account</a>
+  </div>
+{% endblock %}

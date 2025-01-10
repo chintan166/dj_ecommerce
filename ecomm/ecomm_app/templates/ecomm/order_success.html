@@ -3,7 +3,64 @@
 {% load static %}
 
 {% block content %}
+<div class="success-container">
+    <h1>{{ message }}</h1>
+    <a href="/" class="btn btn-primary">Return to Home</a>
+  </div>
+{% endblock %}
 
-<h1>order successfully</h1>
+{% block styles %}
+  <style>
+    .success-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+    
+    .success-message {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    .success-icon {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 20px;
+    }
 
+    .success-title {
+      font-size: 24px;
+      color: #28a745;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .success-description {
+      font-size: 16px;
+      color: #555555;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #218838;
+    }
+  </style>
 {% endblock %}

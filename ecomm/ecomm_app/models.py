@@ -58,6 +58,7 @@ class Order(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     ordered_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, default='Pending')
     
     # Addresses
     billing_address = models.CharField(max_length=255)

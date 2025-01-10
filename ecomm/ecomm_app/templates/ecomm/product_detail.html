@@ -190,6 +190,7 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-primary">Add to Cart</button>
                 </form>
+                {% if product_images %}
                 <div class="product-gallery">
                     <h4>Gallery</h4>
                     <div class="gallery-images">
@@ -198,6 +199,7 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% endif %}
                 {% endif %}
             </div>
         </div>

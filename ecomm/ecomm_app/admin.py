@@ -27,15 +27,22 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     search_fields = ('name',)
     
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('user','total_price', 'ordered_at','billing_address','shipping_address','shipping_method','payment_method')
+    search_fields = ('ordered_at',)
+    
 class ContactUsAdmin(admin.ModelAdmin):
     list_display = ('name', 'email','subject','message')
+    
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ('username','email', 'first_name','last_name','address')
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Cart)
 admin.site.register(CartItem)
-admin.site.register(CustomUser)
+admin.site.register(CustomUser,CustomUserAdmin)
 admin.site.register(ContactUs,ContactUsAdmin)
 admin.site.register(ShippingMethod)
 admin.site.register(PaymentMethod)
-admin.site.register(Order)
+admin.site.register(Order,OrderAdmin)

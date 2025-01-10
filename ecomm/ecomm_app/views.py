@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Cart, CartItem, ContactUs, ShippingMethod, PaymentMethod, OrderItem
+from .models import Product, Cart, CartItem, ContactUs, ShippingMethod, PaymentMethod, OrderItem,Order
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, authenticate, logout
@@ -45,11 +45,11 @@ def add_to_cart(request, product_id):
     cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
 
     if item_created:
-        messages.success(request, f'{product.name} has been added to your cart.')
+        messages.success(request, 'Your message has been sent successfully! <a href="/cart/" class="btn btn-primary">View Cart</a>', extra_tags='safe')
     else:
         cart_item.quantity += 1
         cart_item.save()
-        messages.success(request, f'Quantity of {product.name} increased by 1.')
+        messages.success(request, 'Your message has been sent successfully! <a href="/cart/" class="btn btn-primary">View Cart</a>', extra_tags='safe')
         
     return redirect('product_detail', product_id=product.id)
 
@@ -169,6 +169,21 @@ def remove_from_cart(request, cart_item_id):
     cart_item = get_object_or_404(CartItem, id=cart_item_id)
     cart_item.delete()
     return redirect('view_cart')
+
+@login_required
+def my_account(request):
+    # Get all orders for the logged-in user
+    orders = Order.objects.filter(user=request.user).order_by('-ordered_at')  # Order by most recent
+    return render(request, 'ecomm/my_account.html', {'orders': orders})
+
+@login_required
+def order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    # Pass the order items to the template
+    order_items = order.items.all()  # This retrieves all OrderItem objects related to the Order
+    
+    return render(request, 'ecomm/order_details.html', {'order': order, 'order_items': order_items})
 
 # User login view
 def user_login(request):
