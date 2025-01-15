@@ -41,6 +41,12 @@ def product_list(request):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    qty = 1
+    
+    if qty > product.stock:
+        messages.error(request, 'Sorry, there is not enough stock available for this product.')
+        return redirect('product_detail', product_id=product.id)
+
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
 
@@ -50,6 +56,8 @@ def add_to_cart(request, product_id):
         cart_item.quantity += 1
         cart_item.save()
         messages.success(request, 'Your message has been sent successfully! <a href="/cart/" class="btn btn-primary">View Cart</a>', extra_tags='safe')
+        
+    product.update_stock(qty)
         
     return redirect('product_detail', product_id=product.id)
 

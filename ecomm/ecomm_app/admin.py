@@ -10,7 +10,7 @@ class ProductAdmin(admin.ModelAdmin):
     
     inlines = [ProductImageInline]
     
-    list_display = ('name', 'description', 'price', 'image_tag', 'category')  # Fixed issue with 'id' not being a string
+    list_display = ('name', 'description', 'price', 'image_tag', 'category','stock')  # Fixed issue with 'id' not being a string
     list_filter = ('price','category')
 
     def image_tag(self, obj):

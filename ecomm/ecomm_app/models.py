@@ -27,9 +27,27 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE, null=True, blank=True)
+    stock = models.PositiveIntegerField(default=0)  # Field to store the available quantity in stock.
+
 
     def __str__(self):
         return self.name
+    
+    def check_availability(self, qty):
+        """Check if the requested quantity is available in stock."""
+        if qty <= self.stock:
+            return True  # The requested quantity is available
+        else:
+            return False  # Insufficient stock
+        
+    def update_stock(self, qty):
+        """Update the stock after a purchase."""
+        if qty <= self.stock:
+            self.stock -= qty
+            self.save()
+            return True  # Stock updated successfully
+        else:
+            return False  # Not enough stock to update
 
 
 class ProductImage(models.Model):
