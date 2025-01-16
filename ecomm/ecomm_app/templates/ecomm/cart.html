@@ -4,6 +4,14 @@
 
 {% block content %}
     <h2>Your Cart</h2>
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
     
     {% if cart_items %}
         <ul>

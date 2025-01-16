@@ -41,7 +41,14 @@ def product_list(request):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    qty = 1
+    try:
+        qty = int(request.POST.get('quantity', 1))
+    except ValueError:
+        qty = 1
+    
+    # Ensure quantity is a valid positive integer
+    if qty < 1:
+        qty = 1
     
     if qty > product.stock:
         messages.error(request, 'Sorry, there is not enough stock available for this product.')
@@ -74,14 +81,22 @@ def view_cart(request):
 
     return render(request, 'ecomm/cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
+def handle_cart_item(request, cart_item):
+    """ Helper function to handle common operations """
+    # Check stock for increment
+    if cart_item.quantity + 1 <= cart_item.product.stock:
+        cart_item.quantity += 1
+        cart_item.save()
+        messages.success(request, f'Quantity of {cart_item.product.name} increased by 1.')
+    else:
+        messages.error(request, f'Not enough stock for {cart_item.product.name}.')
+    return redirect('view_cart')
+
 # Increment product quantity in the cart
 @login_required
 def increment_quantity(request, cart_item_id):
     cart_item = get_object_or_404(CartItem, id=cart_item_id)
-    cart_item.quantity += 1
-    cart_item.save()
-    messages.success(request, f'Quantity of {cart_item.product.name} increased by 1.')
-    return redirect('view_cart')
+    return handle_cart_item(request, cart_item)
 
 # Decrement product quantity in the cart (or remove item if quantity is 1)
 @login_required
