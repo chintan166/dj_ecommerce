@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib import messages
+from django.db.models import Count
 from .forms import CustomUserCreationForm, CustomLoginForm, ContactUsForm, CheckoutForm
 
 # Home page displaying all products
@@ -25,11 +26,16 @@ def product_detail(request, product_id):
 def product_list(request):
     products = Product.objects.all()
     price_filter = request.GET.get('price_filter')
+    order_filter = request.GET.get('order_filter')
 
     if price_filter == 'asc':
         products = products.order_by('price')
     elif price_filter == 'desc':
         products = products.order_by('-price')
+        
+    elif order_filter == 'highest_order':
+        products = products.annotate(order_count=Count('orderitems')).order_by('-order_count')
+
 
     paginator = Paginator(products, 4)
     page_number = request.GET.get('page')
@@ -196,7 +202,9 @@ def remove_from_cart(request, cart_item_id):
 @login_required
 def my_account(request):
     # Get all orders for the logged-in user
-    orders = Order.objects.filter(user=request.user).order_by('-ordered_at')  # Order by most recent
+    orders = Order.objects.filter(user=request.user).order_by('-ordered_at')
+    for order in orders:
+        order.items = order.orderitems.all()
     return render(request, 'ecomm/my_account.html', {'orders': orders})
 
 @login_required
@@ -204,7 +212,7 @@ def order_details(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     
     # Pass the order items to the template
-    order_items = order.items.all()  # This retrieves all OrderItem objects related to the Order
+    order_items = order.orderitems.all()  # This retrieves all OrderItem objects related to the Order
     
     return render(request, 'ecomm/order_details.html', {'order': order, 'order_items': order_items})
 

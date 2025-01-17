@@ -22,6 +22,12 @@
                         <option value="asc" {% if request.GET.price_filter == 'asc' %} selected {% endif %}>Price: Low to High</option>
                         <option value="desc" {% if request.GET.price_filter == 'desc' %} selected {% endif %}>Price: High to Low</option>
                     </select>
+
+                    <label for="order_filter">Sort by orders:</label>
+                    <select name="order_filter" id="order_filter" onchange="this.form.submit()">
+                        <option value="">-- Select --</option>
+                        <option value="highest_order" {% if request.GET.order_filter == 'highest_order' %}selected{% endif %}>Highest Order First</option>
+                    </select>
                 </form>
             </div>
 
