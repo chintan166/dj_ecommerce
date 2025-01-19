@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Cart, CartItem, ContactUs, ShippingMethod, PaymentMethod, OrderItem,Order
+from .models import Product,Color, Cart, CartItem, ContactUs, ShippingMethod, PaymentMethod, OrderItem,Order
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib import messages
 from django.db.models import Count
-from .forms import CustomUserCreationForm, CustomLoginForm, ContactUsForm, CheckoutForm
+from .forms import CustomUserCreationForm, CustomLoginForm, ContactUsForm, CheckoutForm,ProductColorSelectionForm
 
 # Home page displaying all products
 def home(request):
@@ -19,8 +19,18 @@ def about(request):
 # Product detail page
 def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+    form = ProductColorSelectionForm()
     product_images = product.gallery.all()
-    return render(request, 'ecomm/product_detail.html', {'product': product, 'product_images': product_images})
+    
+    if request.method == "POST":
+        form = ProductColorSelectionForm(request.POST)
+        if form.is_valid():
+            selected_color = form.cleaned_data['color']
+            # You can handle the selected color here (e.g., adding to cart or showing an image)
+            # For now, we'll just display it for testing
+            return render(request, 'ecomm/product_detail.html', {'product': product,'product_images': product_images, 'form': form, 'selected_color': selected_color})
+    
+    return render(request, 'ecomm/product_detail.html', {'product': product, 'product_images': product_images,'form': form})
 
 # List all products with price sorting and pagination
 def product_list(request):
@@ -47,6 +57,11 @@ def product_list(request):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    color = request.POST.get('color', None)
+    
+    if color:
+        color = product.colors.get(name=color)
+        
     try:
         qty = int(request.POST.get('quantity', 1))
     except ValueError:
@@ -61,7 +76,7 @@ def add_to_cart(request, product_id):
         return redirect('product_detail', product_id=product.id)
 
     cart, created = Cart.objects.get_or_create(user=request.user)
-    cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
+    cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product,color=color)
 
     if item_created:
         messages.success(request, 'Your message has been sent successfully! <a href="/cart/" class="btn btn-primary">View Cart</a>', extra_tags='safe')

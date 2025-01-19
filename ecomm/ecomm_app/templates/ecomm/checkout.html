@@ -7,7 +7,7 @@
 <h3>Your Cart:</h3>
 <ul>
     {% for item in cart_items %}
-        <li>{{ item.product.name }} - ${{ item.product.price }}</li>
+        <li>{{ item.product.name }} - ${{ item.product.price }} - color: {{ item.color.name }}</li>
     {% endfor %}
 </ul>
 

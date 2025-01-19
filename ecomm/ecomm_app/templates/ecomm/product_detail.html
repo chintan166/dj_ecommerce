@@ -163,47 +163,50 @@
 {% if messages %}
 <div class="messages">
   {% for message in messages %}
-    <div class="alert alert-success">
-      <!-- Render message as safe HTML -->
-      {{ message|safe }}
-    </div>
+    <div class="alert alert-success">{{ message|safe }}</div>
   {% endfor %}
 </div>
 {% endif %}
 
-    <div class="product-detail">
-        <div class="product-detail-container">
-            <!-- Left side: Product Image -->
-            <div class="product-image">
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            </div>
+<div class="product-detail">
+    <div class="product-detail-container">
+        <div class="product-image">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        </div>
 
-            <!-- Right side: Product Details -->
-            <div class="product-info">
-                <h2>{{ product.name }}</h2>
-                <p>{{ product.description }}</p>
-                <h4>${{ product.price }}</h4>
+        <div class="product-info">
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <h4>${{ product.price }}</h4>
 
-                <!-- Add to Cart Form -->
-                {% if user.is_authenticated %}
-                <form method="post" action="{% url 'add_to_cart' product.id %}">
-                    {% csrf_token %}
-                    <label for="quantity">Quantity:</label>
-                    <input type="number" id="quantity" name="quantity" min="1" max="{{ product.stock }}" value="1">
-                    <button type="submit" class="btn btn-primary">Add to Cart</button>
-                </form>
-                {% if product_images %}
-                <div class="product-gallery">
-                    <h4>Gallery</h4>
-                    <div class="gallery-images">
-                        {% for image in product_images %}
-                            <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="gallery-image">
-                        {% endfor %}
-                    </div>
+            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <label for="color">Select Color:</label>
+                <select name="color" id="color">
+                    {% for color in product.colors.all %}
+                        <option value="">select color</option>
+                        <option value="{{ color }}">{{ color }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="{{ product.stock }}" value="1">
+                
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </form>
+
+            {% if product_images %}
+            <div class="product-gallery">
+                <h4>Gallery</h4>
+                <div class="gallery-images">
+                    {% for image in product_images %}
+                        <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="gallery-image">
+                    {% endfor %}
                 </div>
-                {% endif %}
-                {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
+</div>
+
 {% endblock %}

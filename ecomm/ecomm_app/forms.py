@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser,Order, ShippingMethod,PaymentMethod
+from .models import CustomUser,Color,Order, ShippingMethod,PaymentMethod
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -18,6 +18,9 @@ class ContactUsForm(forms.Form):
     email = forms.EmailField(required=True)
     subject = forms.CharField(max_length=200, required=True)
     message = forms.CharField(widget=forms.Textarea, required=True)
+    
+class ProductColorSelectionForm(forms.Form):
+    color = forms.ModelChoiceField(queryset=Color.objects.all(), widget=forms.Select)
     
 class CheckoutForm(forms.ModelForm):
     class Meta:

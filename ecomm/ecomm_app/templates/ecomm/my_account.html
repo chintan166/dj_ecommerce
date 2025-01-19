@@ -35,7 +35,8 @@
                     <li>
                       {{ item.product.name }} - 
                       Quantity: {{ item.quantity }} - 
-                      Price: ${{ item.price }}
+                      Price: ${{ item.price }} - 
+                      {{ item.color.name }}
                     </li>
                   {% endfor %}
                 </ul>
