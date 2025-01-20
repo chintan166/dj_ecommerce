@@ -173,7 +173,8 @@ def checkout_view(request):
                         order=order,  # Link to the Order
                         product=item.product,  # Link to the Product
                         quantity=item.quantity,  # Quantity from the cart
-                        price=item.product.price  # Price of the product
+                        price=item.product.price,  # Price of the product
+                        color=item.color
                     )
 
                 # Clear the cart after creating the order
@@ -220,6 +221,8 @@ def my_account(request):
     orders = Order.objects.filter(user=request.user).order_by('-ordered_at')
     for order in orders:
         order.items = order.orderitems.all()
+        for item in order.items:
+            item.color_name = item.color.name if item.color else None
     return render(request, 'ecomm/my_account.html', {'orders': orders})
 
 @login_required

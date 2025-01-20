@@ -184,7 +184,6 @@
                 <label for="color">Select Color:</label>
                 <select name="color" id="color">
                     {% for color in product.colors.all %}
-                        <option value="">select color</option>
                         <option value="{{ color }}">{{ color }}</option>
                     {% endfor %}
                 </select>
