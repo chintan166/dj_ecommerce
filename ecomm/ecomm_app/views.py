@@ -21,6 +21,9 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     form = ProductColorSelectionForm()
     product_images = product.gallery.all()
+    has_colors = product.colors.exists()
+    
+    main_image = product.image if product.image else None
     
     if request.method == "POST":
         form = ProductColorSelectionForm(request.POST)
@@ -28,9 +31,9 @@ def product_detail(request, product_id):
             selected_color = form.cleaned_data['color']
             # You can handle the selected color here (e.g., adding to cart or showing an image)
             # For now, we'll just display it for testing
-            return render(request, 'ecomm/product_detail.html', {'product': product,'product_images': product_images, 'form': form, 'selected_color': selected_color})
+            return render(request, 'ecomm/product_detail.html', {'product': product,'product_images': product_images, 'form': form, 'selected_color': selected_color,'has_colors': has_colors,'main_image': main_image})
     
-    return render(request, 'ecomm/product_detail.html', {'product': product, 'product_images': product_images,'form': form})
+    return render(request, 'ecomm/product_detail.html', {'product': product, 'product_images': product_images,'form': form,'has_colors': has_colors,'main_image': main_image})
 
 # List all products with price sorting and pagination
 def product_list(request):

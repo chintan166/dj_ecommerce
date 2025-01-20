@@ -28,7 +28,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE, null=True, blank=True)
     stock = models.PositiveIntegerField(default=0)  # Field to store the available quantity in stock.
-    colors = models.ManyToManyField('Color', related_name='products')  # Many-to-many relationship with Color
+    colors = models.ManyToManyField('Color',blank=True, related_name='products')  # Many-to-many relationship with Color
 
 
     def __str__(self):
@@ -51,8 +51,8 @@ class Product(models.Model):
             return False  # Not enough stock to update
         
 class Color(models.Model):
-    name = models.CharField(max_length=100)
-    hex_code = models.CharField(max_length=7)  # e.g. #FF5733 for color
+    name = models.CharField(max_length=100,blank=True)
+    hex_code = models.CharField(max_length=7,blank=True)  # e.g. #FF5733 for color
 
         # Many-to-many relationship with color options
     def __str__(self):
